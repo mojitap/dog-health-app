@@ -4,71 +4,70 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#10B981">
-<title>わんちゃん健康チェック</title>
-<link rel="manifest" href="manifest.json">
+<meta name="description" content="犬・猫の気になる症状から受診の目安を確認できるペット健康チェック">
+<title>ペット健康チェック</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <style>
   :root{
-    --bg:#FFF7ED;
-    --card:#FFFFFF;
-    --ink:#292524;
-    --ink-sub:#78716C;
-    --ink-muted:#A8A29E;
-    --line:#E7E5E4;
-    --em:#10B981;
-    --em-light:#D1FAE5;
-    --em-dark:#065F46;
-    --amber:#D97706;
-    --amber-light:#FEF3C7;
-    --red:#E11D48;
-    --red-light:#FFE4E6;
-    --green:#4D7C0F;
-    --green-light:#ECFCCB;
-    --radius:14px;
+    --bg:#FFF7ED; --card:#FFFFFF; --ink:#292524; --ink-sub:#78716C;
+    --ink-muted:#A8A29E; --line:#E7E5E4; --em:#10B981; --em-light:#D1FAE5;
+    --em-dark:#065F46; --amber:#D97706; --amber-light:#FEF3C7;
+    --red:#E11D48; --red-light:#FFE4E6; --green:#4D7C0F; --green-light:#ECFCCB;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    background:var(--bg);
-    color:var(--ink);
+    background:var(--bg); color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
-    line-height:1.7;
-    min-height:100vh;
-    padding-bottom:40px;
+    line-height:1.7; min-height:100vh; padding-bottom:40px;
   }
   .wrap{max-width:480px;margin:0 auto;padding:0 18px}
   header.app{
-    padding:28px 18px 20px;
-    background:var(--em-light);
-    color:var(--em-dark);
-    border-radius:0 0 24px 24px;
-    margin-bottom:20px;
+    padding:28px 18px 20px; background:var(--em-light); color:var(--em-dark);
+    border-radius:0 0 24px 24px; margin-bottom:20px;
   }
   header.app .wrap{padding:0}
   .paw{font-size:26px;line-height:1;margin-bottom:6px;display:inline-block}
   header.app h1{font-size:20px;font-weight:600;margin:0 0 4px}
   header.app p{font-size:13px;margin:0;opacity:.85}
-  .screen{display:none}
-  .screen.active{display:block}
-  .top-link{font-size:13px;color:var(--em-dark);text-align:left;display:block;margin:0 0 14px;text-decoration:underline;cursor:pointer;background:none;border:none;padding:0}
+  .screen{display:none}.screen.active{display:block}
+  .top-link{font-size:13px;color:var(--em-dark);display:block;margin:0 0 14px;text-decoration:underline;cursor:pointer;background:none;border:none;padding:0}
+  .section-label{font-size:13px;color:var(--ink-sub);margin:0 0 12px}
+  .pet-selector{display:flex;gap:10px;margin-bottom:12px}
+  .pet-btn{
+    flex:1;border:1px solid var(--line);background:var(--card);border-radius:10px;
+    padding:10px;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink-sub);
+  }
+  .pet-btn.active{border-color:var(--em);background:var(--em-light);color:var(--em-dark)}
   textarea{
     width:100%;min-height:140px;background:var(--card);border:1px solid var(--line);
     border-radius:12px;padding:14px;font-size:15px;color:var(--ink);resize:none;font-family:inherit;
   }
   textarea:focus{outline:none;border-color:var(--em)}
+  .counter{font-size:11px;color:var(--ink-muted);text-align:right;margin:4px 2px 0}
   .primary-btn{
-    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--em);color:#fff;
-    border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;
-    cursor:pointer;margin-top:14px;
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    background:var(--em);color:#fff;border:none;border-radius:12px;padding:14px;
+    font-size:15px;font-weight:600;cursor:pointer;margin-top:14px;
   }
   .primary-btn:disabled{opacity:.5}
   .ghost-btn{
     display:block;width:100%;text-align:center;background:none;color:var(--em-dark);
-    border:1px solid var(--em);border-radius:12px;padding:13px;font-size:14px;font-weight:600;
-    cursor:pointer;margin-top:10px;
+    border:1px solid var(--em);border-radius:12px;padding:13px;font-size:14px;
+    font-weight:600;cursor:pointer;margin-top:10px;
   }
+  .danger-btn{background:var(--red)}
   .error-text{font-size:12px;color:var(--red);margin:8px 0 0}
   .hint-text{font-size:11px;color:var(--ink-muted);margin:8px 0 0;text-align:center}
   .result-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .emergency-box{
+    display:none;background:var(--red-light);border:2px solid var(--red);border-radius:14px;
+    padding:16px;margin-bottom:14px;color:#9F1239;
+  }
+  .emergency-box.show{display:block}
+  .emergency-box h2{font-size:17px;margin:0 0 6px}
+  .emergency-box p{font-size:14px;margin:0}
   .badge{display:inline-block;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;margin-bottom:12px}
   .badge.red{background:var(--red-light);color:var(--red)}
   .badge.amber{background:var(--amber-light);color:var(--amber)}
@@ -83,85 +82,75 @@
   .hosp-status{flex-shrink:0;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
   .hosp-status.open{background:var(--green-light);color:var(--green)}
   .hosp-status.closed{background:#F5F5F4;color:var(--ink-muted)}
-  .hosp-hours{font-size:13px;color:var(--ink-sub);margin:0 0 4px}
-  .hosp-note{font-size:12px;color:var(--ink-muted);margin:0 0 10px}
+  .hosp-status.unknown{background:var(--amber-light);color:var(--amber)}
+  .hosp-hours,.hosp-address,.hosp-phone{font-size:13px;color:var(--ink-sub);margin:0 0 4px}
+  .hosp-note{font-size:12px;color:var(--ink-muted);margin:8px 0 10px}
   .hosp-actions{display:flex;gap:8px}
-  .hosp-actions a{
-    flex:1;text-align:center;font-size:13px;font-weight:500;text-decoration:none;
-    padding:9px;border-radius:8px;border:1px solid var(--line);color:var(--ink);
-  }
+  .hosp-actions a{flex:1;text-align:center;font-size:13px;font-weight:500;text-decoration:none;padding:9px;border-radius:8px;border:1px solid var(--line);color:var(--ink)}
   .hosp-actions a.call{background:var(--em-light);color:var(--em-dark);border-color:transparent}
   .topbar{display:flex;align-items:center;gap:6px;margin-bottom:14px;background:none;border:none;color:var(--em-dark);font-size:14px;font-weight:500;cursor:pointer;padding:0}
+  .install-card{background:#FFFBEB;border:1px solid #FDE68A;border-radius:12px;padding:13px;margin-top:22px}
+  .install-card h2{font-size:14px;margin:0 0 4px}.install-card p{font-size:12px;color:var(--ink-sub);margin:0}
+  .install-card button{margin-top:9px;width:100%;border:1px solid var(--em);background:#fff;color:var(--em-dark);border-radius:9px;padding:9px;font-weight:600}
   .disclaimer{font-size:11px;color:var(--ink-muted);text-align:center;margin:24px 0 0;padding:0 8px}
-  .section-label{font-size:13px;color:var(--ink-sub);margin:0 0 12px}
 </style>
 </head>
 <body>
-
 <header class="app">
   <div class="wrap">
     <span class="paw">🐾</span>
-    <h1>わんちゃん健康チェック</h1>
-    <p>気になる様子を、そのまま文章で教えてください</p>
+    <h1>ペット健康チェック</h1>
+    <p>犬や猫の気になる様子を、そのまま文章で教えてください</p>
   </div>
 </header>
 
 <div class="wrap">
-
   <section id="screen-input" class="screen active">
-    <button class="top-link" onclick="showHospitals()">夜間・救急の動物病院を見る &rsaquo;</button>
+    <button class="top-link" type="button" onclick="showHospitals()">夜間・救急の動物病院を見る &rsaquo;</button>
+    <p class="section-label">どちらの症状を調べますか？</p>
+    <div class="pet-selector" role="group" aria-label="ペットの種類">
+      <button class="pet-btn active" type="button" data-pet="dog" onclick="selectPet('dog')">🐶 犬</button>
+      <button class="pet-btn" type="button" data-pet="cat" onclick="selectPet('cat')">🐱 猫</button>
+    </div>
     <p class="section-label">いつから、どんな様子か、思いつくままで大丈夫です</p>
-    <textarea id="symptom-text" placeholder="例）今朝から下痢が3回あって、いつもより元気がありません。ご飯は少し食べました。"></textarea>
+    <textarea id="symptom-text" maxlength="1000" placeholder="例）今朝から下痢が3回あって、いつもより元気がありません。ご飯は少し食べました。"></textarea>
+    <p class="counter"><span id="char-count">0</span>/1000文字</p>
     <p class="error-text" id="error-text" style="display:none"></p>
-    <button class="primary-btn" id="submit-btn" onclick="handleSubmit()">受診の目安を調べる</button>
-    <p class="hint-text" id="loading-hint" style="display:none">しばらくアクセスがないとサーバーが休止するため、初回は起動に時間がかかることがあります</p>
+    <button class="primary-btn" id="submit-btn" type="button" onclick="handleSubmit()">受診の目安を調べる</button>
+    <p class="hint-text" id="loading-hint" style="display:none">初回はサーバーの起動に時間がかかる場合があります</p>
   </section>
 
   <section id="screen-result" class="screen">
+    <div id="emergency-box" class="emergency-box">
+      <h2>すぐに動物病院へ電話してください</h2>
+      <p>緊急性が高い可能性があります。AIの結果だけで様子を見ず、受診できる動物病院へ今すぐ電話してください。</p>
+      <button class="primary-btn danger-btn" type="button" onclick="showHospitals()">夜間・救急の動物病院を見る</button>
+    </div>
     <div class="result-card" id="result-card"></div>
-    <button class="primary-btn" onclick="showHospitals()">夜間・救急の動物病院を見る</button>
-    <button class="ghost-btn" onclick="goHome()">別の症状を入力する</button>
+    <button class="primary-btn" type="button" onclick="showHospitals()">夜間・救急の動物病院を見る</button>
+    <button class="ghost-btn" type="button" onclick="goHome()">別の症状を入力する</button>
   </section>
 
   <section id="screen-hosp" class="screen">
-    <button class="topbar" onclick="goHome()">&larr; トップへ</button>
-    <p class="section-label">徳島県内で夜間診療に対応する動物病院です。営業状況は目安のため、来院前に必ずお電話でご確認ください。</p>
-    <div id="hosp-list"></div>
+    <button class="topbar" type="button" onclick="goHome()">&larr; トップへ</button>
+    <p class="section-label">Googleに登録されている営業時間情報を取得しています。夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。</p>
+    <div id="hosp-list"><p class="section-label">病院情報を読み込んでいます…</p></div>
   </section>
 
-  <p class="disclaimer">このアプリはおおよその目安を示すものであり、診断ではありません。最終的な判断は必ず獣医師にご相談ください。</p>
+  <aside id="install-card" class="install-card">
+    <h2>ホーム画面に追加できます</h2>
+    <p id="install-guide">iPhoneはSafariの共有ボタンから「ホーム画面に追加」。Androidはブラウザメニューから「アプリをインストール」または「ホーム画面に追加」を選択してください。</p>
+    <button id="install-btn" type="button" style="display:none">ホーム画面に追加</button>
+  </aside>
+
+  <p class="disclaimer">このサービスはおおよその受診目安を示すものであり、診断ではありません。最終的な判断は必ず獣医師にご相談ください。</p>
 </div>
 
 <script>
-/* ここを、自分のRenderの中継サーバーのURLに書き換えてください */
-const RELAY_URL = "https://dog-health-relay.onrender.com/analyze";
-
-const HOSPITALS = [
-  { name:"はち動物クリニック", hours:"月〜水・金〜土 10:00-13:00 / 16:00-20:00、木・日 10:00-13:00", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x35530d5b11c75d8f:0x93a8808cb0136d5",
-    schedule:[{days:[1,2,3,5,6],ranges:[["10:00","13:00"],["16:00","20:00"]]},{days:[4,0],ranges:[["10:00","13:00"]]}] },
-  { name:"おおしま動物病院", hours:"月〜木・土 9:00-11:30 / 16:00-19:30、金・日 9:00-11:30", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x3553738202a37259:0xe8684cc81c82452e",
-    schedule:[{days:[1,2,3,4,6],ranges:[["09:00","11:30"],["16:00","19:30"]]},{days:[5,0],ranges:[["09:00","11:30"]]}] },
-  { name:"海動物病院 徳島往診所", hours:"月〜金 11:00-20:00、土日 10:00-20:00", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x355312a7cdd00cbf:0x5237f4edde50d097",
-    schedule:[{days:[1,2,3,4,5],ranges:[["11:00","20:00"]]},{days:[6,0],ranges:[["10:00","20:00"]]}] },
-  { name:"ルドルフ動物病院", hours:"月・火・木〜土 9:00-12:30 / 16:00-19:30、日 9:00-12:30", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x3553730cc5c6c9cd:0x4089bc6eae77f9af",
-    schedule:[{days:[1,2,4,5,6],ranges:[["09:00","12:30"],["16:00","19:30"]]},{days:[0],ranges:[["09:00","12:30"]]}] },
-  { name:"なかがわ動物病院", hours:"月〜水・金〜土 9:00-13:00 / 17:00-19:30、木 9:00-13:00", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x35536d7b1c492ab7:0x3a32195d0b536efd",
-    schedule:[{days:[1,2,3,5,6],ranges:[["09:00","13:00"],["17:00","19:30"]]},{days:[4],ranges:[["09:00","13:00"]]}] }
-];
-
-function isOpenNow(hospital, now){
-  const day = now.getDay();
-  const minutes = now.getHours()*60 + now.getMinutes();
-  const block = hospital.schedule.find(b => b.days.includes(day));
-  if(!block) return {open:false};
-  for(const [start,end] of block.ranges){
-    const [sh,sm]=start.split(":").map(Number);
-    const [eh,em]=end.split(":").map(Number);
-    const s=sh*60+sm, e=eh*60+em;
-    if(minutes>=s && minutes<e) return {open:true, until:end};
-  }
-  return {open:false};
-}
+const RELAY_BASE = "https://dog-health-relay.onrender.com";
+const MAX_LENGTH = 1000;
+let selectedPet = "dog";
+let deferredInstallPrompt = null;
 
 const tierMeta = {
   emergency:{cls:"red", label:"緊急性が高い可能性"},
@@ -169,10 +158,21 @@ const tierMeta = {
   observe:{cls:"green", label:"経過観察でも可"}
 };
 
+function selectPet(pet){
+  selectedPet = pet;
+  document.querySelectorAll(".pet-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.pet === pet);
+  });
+}
+
 function switchScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   window.scrollTo(0,0);
+}
+
+function safeText(value, fallback=""){
+  return typeof value === "string" ? value : fallback;
 }
 
 async function handleSubmit(){
@@ -181,24 +181,34 @@ async function handleSubmit(){
   const errEl = document.getElementById("error-text");
   const btn = document.getElementById("submit-btn");
   const hint = document.getElementById("loading-hint");
+
   errEl.style.display = "none";
-  if(!text) return;
+  if(!text){
+    errEl.textContent = "症状を入力してください。";
+    errEl.style.display = "block";
+    return;
+  }
+  if(text.length > MAX_LENGTH){
+    errEl.textContent = "入力は1,000文字以内でお願いします。";
+    errEl.style.display = "block";
+    return;
+  }
 
   btn.disabled = true;
   btn.textContent = "判定しています…";
   hint.style.display = "block";
 
   try{
-    const res = await fetch(RELAY_URL, {
+    const res = await fetch(`${RELAY_BASE}/analyze`, {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ text })
+      body:JSON.stringify({text, pet:selectedPet})
     });
-    const data = await res.json();
-    if(!res.ok){ throw new Error(data.error || "判定に失敗しました"); }
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error || "判定に失敗しました");
     showResult(data);
   }catch(e){
-    errEl.textContent = e.message || "判定に失敗しました。もう一度お試しください。";
+    errEl.textContent = e.message || "判定に失敗しました。時間をおいてもう一度お試しください。";
     errEl.style.display = "block";
   }finally{
     btn.disabled = false;
@@ -208,42 +218,161 @@ async function handleSubmit(){
 }
 
 function showResult(result){
-  switchScreen("screen-result");
-  const meta = tierMeta[result.urgency] || {cls:"green", label:"判定結果"};
+  const urgency = ["emergency","soon","observe"].includes(result.urgency) ? result.urgency : "soon";
+  const meta = tierMeta[urgency];
+  document.getElementById("emergency-box").classList.toggle("show", urgency === "emergency");
+
   const card = document.getElementById("result-card");
-  card.innerHTML =
-    '<span class="badge '+meta.cls+'">'+meta.label+'</span>'+
-    '<p class="result-title">'+result.title+'</p>'+
-    '<p class="result-desc">'+result.description+'</p>'+
-    '<p class="result-advice">'+result.advice+'</p>'+
-    '<p class="result-note">この結果は診断ではありません。判断に迷う場合は動物病院に電話で相談してください。</p>';
+  card.replaceChildren();
+
+  const badge = document.createElement("span");
+  badge.className = `badge ${meta.cls}`;
+  badge.textContent = meta.label;
+
+  const title = document.createElement("p");
+  title.className = "result-title";
+  title.textContent = safeText(result.title, "症状の確認結果");
+
+  const desc = document.createElement("p");
+  desc.className = "result-desc";
+  desc.textContent = safeText(result.description, "入力内容から受診の目安を判定しました。");
+
+  const advice = document.createElement("p");
+  advice.className = "result-advice";
+  advice.textContent = safeText(result.advice, "判断に迷う場合は動物病院へ電話で相談してください。");
+
+  const note = document.createElement("p");
+  note.className = "result-note";
+  note.textContent = "この結果は診断ではありません。症状が悪化した場合や判断に迷う場合は、動物病院へ電話で相談してください。";
+
+  card.append(badge,title,desc,advice,note);
+  switchScreen("screen-result");
 }
 
-function showHospitals(){
+async function showHospitals(){
   switchScreen("screen-hosp");
-  const now = new Date();
   const list = document.getElementById("hosp-list");
-  list.innerHTML = "";
-  HOSPITALS.forEach(h=>{
-    const status = isOpenNow(h, now);
-    const div = document.createElement("div");
-    div.className = "hosp-card";
-    let actions = '<a class="maps" href="'+h.maps+'" target="_blank" rel="noopener">地図を見る</a>';
-    if(h.tel){ actions += '<a class="call" href="tel:'+h.tel+'">電話をかける</a>'; }
-    div.innerHTML =
-      '<div class="hosp-top"><p class="hosp-name">'+h.name+'</p>'+
-      '<span class="hosp-status '+(status.open?"open":"closed")+'">'+(status.open?("診療中（"+status.until+"まで）"):"現在は診療時間外")+'</span></div>'+
-      '<p class="hosp-hours">'+h.hours+'</p>'+
-      '<p class="hosp-note">得意分野: '+h.note+'</p>'+
-      '<div class="hosp-actions">'+actions+'</div>';
-    list.appendChild(div);
+  list.innerHTML = '<p class="section-label">病院情報を読み込んでいます…</p>';
+
+  try{
+    const res = await fetch(`${RELAY_BASE}/hospitals`);
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error || "病院情報を取得できませんでした");
+    renderHospitals(Array.isArray(data.hospitals) ? data.hospitals : []);
+  }catch(e){
+    list.textContent = "";
+    const p = document.createElement("p");
+    p.className = "error-text";
+    p.textContent = e.message || "病院情報を取得できませんでした。";
+    list.appendChild(p);
+  }
+}
+
+function renderHospitals(hospitals){
+  const list = document.getElementById("hosp-list");
+  list.replaceChildren();
+
+  if(!hospitals.length){
+    const p = document.createElement("p");
+    p.className = "section-label";
+    p.textContent = "病院情報を確認できませんでした。Googleマップや電話でご確認ください。";
+    list.appendChild(p);
+    return;
+  }
+
+  hospitals.forEach(h=>{
+    const card = document.createElement("div");
+    card.className = "hosp-card";
+
+    const top = document.createElement("div");
+    top.className = "hosp-top";
+    const name = document.createElement("p");
+    name.className = "hosp-name";
+    name.textContent = safeText(h.name, "動物病院");
+
+    const status = document.createElement("span");
+    const statusType = h.openNow === true ? "open" : h.openNow === false ? "closed" : "unknown";
+    status.className = `hosp-status ${statusType}`;
+    status.textContent = h.openNow === true
+      ? "Google登録情報では現在営業時間内です"
+      : h.openNow === false
+        ? "Google登録情報では営業時間外です"
+        : "現在の営業時間を確認できません";
+
+    top.append(name,status);
+    card.appendChild(top);
+
+    if(h.todayHours){
+      const hours = document.createElement("p");
+      hours.className = "hosp-hours";
+      hours.textContent = `本日の登録営業時間：${h.todayHours}`;
+      card.appendChild(hours);
+    }
+    if(h.address){
+      const address = document.createElement("p");
+      address.className = "hosp-address";
+      address.textContent = h.address;
+      card.appendChild(address);
+    }
+    if(h.phone){
+      const phone = document.createElement("p");
+      phone.className = "hosp-phone";
+      phone.textContent = h.phone;
+      card.appendChild(phone);
+    }
+
+    const note = document.createElement("p");
+    note.className = "hosp-note";
+    note.textContent = "夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。";
+    card.appendChild(note);
+
+    const actions = document.createElement("div");
+    actions.className = "hosp-actions";
+    if(h.phone){
+      const call = document.createElement("a");
+      call.className = "call";
+      call.href = `tel:${h.phone.replace(/[^\d+]/g,"")}`;
+      call.textContent = "電話をかける";
+      actions.appendChild(call);
+    }
+    if(h.mapsUrl){
+      const maps = document.createElement("a");
+      maps.href = h.mapsUrl;
+      maps.target = "_blank";
+      maps.rel = "noopener";
+      maps.textContent = "地図を見る";
+      actions.appendChild(maps);
+    }
+    card.appendChild(actions);
+    list.appendChild(card);
   });
 }
 
 function goHome(){
-  document.getElementById("symptom-text").value = "";
   document.getElementById("error-text").style.display = "none";
   switchScreen("screen-input");
+}
+
+document.getElementById("symptom-text").addEventListener("input", e=>{
+  document.getElementById("char-count").textContent = e.target.value.length;
+});
+
+window.addEventListener("beforeinstallprompt", event=>{
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  document.getElementById("install-btn").style.display = "block";
+});
+
+document.getElementById("install-btn").addEventListener("click", async()=>{
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  document.getElementById("install-btn").style.display = "none";
+});
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>navigator.serviceWorker.register("/service-worker.js").catch(()=>{}));
 }
 </script>
 </body>
