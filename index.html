@@ -268,12 +268,6 @@
     <div id="hosp-list"><p class="section-label">徳島県内で現在営業時間内の動物病院を確認しています…</p></div>
   </section>
 
-  <aside id="install-card" class="install-card">
-    <h2>ホーム画面に追加できます</h2>
-    <p id="install-guide">iPhoneはSafariの共有ボタンから「ホーム画面に追加」。Androidはブラウザメニューから「アプリをインストール」または「ホーム画面に追加」を選択してください。</p>
-    <button id="install-btn" type="button" style="display:none">ホーム画面に追加</button>
-  </aside>
-
   <p class="disclaimer">このサービスはおおよその受診目安を示すものであり、診断ではありません。最終的な判断は必ず獣医師にご相談ください。</p>
 </div>
 
@@ -281,7 +275,6 @@
 const RELAY_BASE = "https://dog-health-relay.onrender.com";
 const MAX_LENGTH = 1000;
 let selectedPet = "dog";
-let deferredInstallPrompt = null;
 
 const tierMeta = {
   emergency:{cls:"red", label:"緊急性が高い可能性"},
@@ -626,19 +619,6 @@ prefectureSelect.addEventListener("change",()=>{
   localStorage.setItem("petHealthPrefecture",prefectureSelect.value);
 });
 
-window.addEventListener("beforeinstallprompt", event=>{
-  event.preventDefault();
-  deferredInstallPrompt = event;
-  document.getElementById("install-btn").style.display = "block";
-});
-
-document.getElementById("install-btn").addEventListener("click", async()=>{
-  if(!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
-  deferredInstallPrompt = null;
-  document.getElementById("install-btn").style.display = "none";
-});
 
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>navigator.serviceWorker.register("/service-worker.js").catch(()=>{}));
