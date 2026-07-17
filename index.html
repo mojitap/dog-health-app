@@ -106,7 +106,7 @@
 
 <div class="wrap">
   <section id="screen-input" class="screen active">
-    <button class="top-link" type="button" onclick="showHospitals()">夜間・救急の動物病院を見る &rsaquo;</button>
+    <button class="top-link" type="button" onclick="showHospitals()">現在営業時間内の動物病院を見る &rsaquo;</button>
     <p class="section-label">どちらの症状を調べますか？</p>
     <div class="pet-selector" role="group" aria-label="ペットの種類">
       <button class="pet-btn active" type="button" data-pet="dog" onclick="selectPet('dog')">🐶 犬</button>
@@ -124,17 +124,17 @@
     <div id="emergency-box" class="emergency-box">
       <h2>すぐに動物病院へ電話してください</h2>
       <p>緊急性が高い可能性があります。AIの結果だけで様子を見ず、受診できる動物病院へ今すぐ電話してください。</p>
-      <button class="primary-btn danger-btn" type="button" onclick="showHospitals()">夜間・救急の動物病院を見る</button>
+      <button class="primary-btn danger-btn" type="button" onclick="showHospitals()">現在営業時間内の動物病院を見る</button>
     </div>
     <div class="result-card" id="result-card"></div>
-    <button class="primary-btn" type="button" onclick="showHospitals()">夜間・救急の動物病院を見る</button>
+    <button class="primary-btn" type="button" onclick="showHospitals()">現在営業時間内の動物病院を見る</button>
     <button class="ghost-btn" type="button" onclick="goHome()">別の症状を入力する</button>
   </section>
 
   <section id="screen-hosp" class="screen">
     <button class="topbar" type="button" onclick="goHome()">&larr; トップへ</button>
-    <p class="section-label">Googleに登録されている営業時間情報を取得しています。夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。</p>
-    <div id="hosp-list"><p class="section-label">病院情報を読み込んでいます…</p></div>
+    <p class="section-label">徳島県内で、Google登録情報上、現在営業時間内の動物病院を表示します。夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。</p>
+    <div id="hosp-list"><p class="section-label">徳島県内で現在営業時間内の動物病院を確認しています…</p></div>
   </section>
 
   <aside id="install-card" class="install-card">
@@ -252,7 +252,7 @@ function showResult(result){
 async function showHospitals(){
   switchScreen("screen-hosp");
   const list = document.getElementById("hosp-list");
-  list.innerHTML = '<p class="section-label">病院情報を読み込んでいます…</p>';
+  list.innerHTML = '<p class="section-label">徳島県内で現在営業時間内の動物病院を確認しています…</p>';
 
   try{
     const res = await fetch(`${RELAY_BASE}/hospitals`);
@@ -275,10 +275,23 @@ function renderHospitals(hospitals){
   if(!hospitals.length){
     const p = document.createElement("p");
     p.className = "section-label";
-    p.textContent = "病院情報を確認できませんでした。Googleマップや電話でご確認ください。";
+    p.textContent = "現在、Google登録情報上で営業時間内の動物病院を確認できませんでした。営業時間外でも電話対応している場合があるため、Googleマップや各病院の公式情報もご確認ください。";
     list.appendChild(p);
+
+    const maps = document.createElement("a");
+    maps.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("徳島県 夜間 動物病院");
+    maps.target = "_blank";
+    maps.rel = "noopener";
+    maps.className = "ghost-btn";
+    maps.textContent = "Googleマップで探す";
+    list.appendChild(maps);
     return;
   }
+
+  const summary = document.createElement("p");
+  summary.className = "section-label";
+  summary.textContent = `Google登録情報上、現在営業時間内の動物病院が${hospitals.length}件見つかりました。`;
+  list.appendChild(summary);
 
   hospitals.forEach(h=>{
     const card = document.createElement("div");
