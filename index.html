@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10B981">
+<title>わんちゃん健康チェック</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  :root{
+    --bg:#FFF7ED;
+    --card:#FFFFFF;
+    --ink:#292524;
+    --ink-sub:#78716C;
+    --ink-muted:#A8A29E;
+    --line:#E7E5E4;
+    --em:#10B981;
+    --em-light:#D1FAE5;
+    --em-dark:#065F46;
+    --amber:#D97706;
+    --amber-light:#FEF3C7;
+    --red:#E11D48;
+    --red-light:#FFE4E6;
+    --green:#4D7C0F;
+    --green-light:#ECFCCB;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+    line-height:1.7;
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  .wrap{max-width:480px;margin:0 auto;padding:0 18px}
+  header.app{
+    padding:28px 18px 20px;
+    background:var(--em-light);
+    color:var(--em-dark);
+    border-radius:0 0 24px 24px;
+    margin-bottom:20px;
+  }
+  header.app .wrap{padding:0}
+  .paw{font-size:26px;line-height:1;margin-bottom:6px;display:inline-block}
+  header.app h1{font-size:20px;font-weight:600;margin:0 0 4px}
+  header.app p{font-size:13px;margin:0;opacity:.85}
+  .screen{display:none}
+  .screen.active{display:block}
+  .top-link{font-size:13px;color:var(--em-dark);text-align:left;display:block;margin:0 0 14px;text-decoration:underline;cursor:pointer;background:none;border:none;padding:0}
+  textarea{
+    width:100%;min-height:140px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:14px;font-size:15px;color:var(--ink);resize:none;font-family:inherit;
+  }
+  textarea:focus{outline:none;border-color:var(--em)}
+  .primary-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--em);color:#fff;
+    border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;
+    cursor:pointer;margin-top:14px;
+  }
+  .primary-btn:disabled{opacity:.5}
+  .ghost-btn{
+    display:block;width:100%;text-align:center;background:none;color:var(--em-dark);
+    border:1px solid var(--em);border-radius:12px;padding:13px;font-size:14px;font-weight:600;
+    cursor:pointer;margin-top:10px;
+  }
+  .error-text{font-size:12px;color:var(--red);margin:8px 0 0}
+  .hint-text{font-size:11px;color:var(--ink-muted);margin:8px 0 0;text-align:center}
+  .result-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .badge{display:inline-block;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;margin-bottom:12px}
+  .badge.red{background:var(--red-light);color:var(--red)}
+  .badge.amber{background:var(--amber-light);color:var(--amber)}
+  .badge.green{background:var(--green-light);color:var(--green)}
+  .result-title{font-size:18px;font-weight:600;margin:0 0 8px}
+  .result-desc{font-size:14px;color:var(--ink-sub);margin:0 0 12px}
+  .result-advice{font-size:14px;color:var(--ink);background:#FFF7ED;border-radius:10px;padding:12px;margin:0 0 12px}
+  .result-note{font-size:12px;color:var(--ink-muted);border-top:1px solid var(--line);padding-top:12px}
+  .hosp-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+  .hosp-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+  .hosp-name{font-size:15px;font-weight:600;margin:0}
+  .hosp-status{flex-shrink:0;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .hosp-status.open{background:var(--green-light);color:var(--green)}
+  .hosp-status.closed{background:#F5F5F4;color:var(--ink-muted)}
+  .hosp-hours{font-size:13px;color:var(--ink-sub);margin:0 0 4px}
+  .hosp-note{font-size:12px;color:var(--ink-muted);margin:0 0 10px}
+  .hosp-actions{display:flex;gap:8px}
+  .hosp-actions a{
+    flex:1;text-align:center;font-size:13px;font-weight:500;text-decoration:none;
+    padding:9px;border-radius:8px;border:1px solid var(--line);color:var(--ink);
+  }
+  .hosp-actions a.call{background:var(--em-light);color:var(--em-dark);border-color:transparent}
+  .topbar{display:flex;align-items:center;gap:6px;margin-bottom:14px;background:none;border:none;color:var(--em-dark);font-size:14px;font-weight:500;cursor:pointer;padding:0}
+  .disclaimer{font-size:11px;color:var(--ink-muted);text-align:center;margin:24px 0 0;padding:0 8px}
+  .section-label{font-size:13px;color:var(--ink-sub);margin:0 0 12px}
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="wrap">
+    <span class="paw">🐾</span>
+    <h1>わんちゃん健康チェック</h1>
+    <p>気になる様子を、そのまま文章で教えてください</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section id="screen-input" class="screen active">
+    <button class="top-link" onclick="showHospitals()">夜間・救急の動物病院を見る &rsaquo;</button>
+    <p class="section-label">いつから、どんな様子か、思いつくままで大丈夫です</p>
+    <textarea id="symptom-text" placeholder="例）今朝から下痢が3回あって、いつもより元気がありません。ご飯は少し食べました。"></textarea>
+    <p class="error-text" id="error-text" style="display:none"></p>
+    <button class="primary-btn" id="submit-btn" onclick="handleSubmit()">受診の目安を調べる</button>
+    <p class="hint-text" id="loading-hint" style="display:none">しばらくアクセスがないとサーバーが休止するため、初回は起動に時間がかかることがあります</p>
+  </section>
+
+  <section id="screen-result" class="screen">
+    <div class="result-card" id="result-card"></div>
+    <button class="primary-btn" onclick="showHospitals()">夜間・救急の動物病院を見る</button>
+    <button class="ghost-btn" onclick="goHome()">別の症状を入力する</button>
+  </section>
+
+  <section id="screen-hosp" class="screen">
+    <button class="topbar" onclick="goHome()">&larr; トップへ</button>
+    <p class="section-label">徳島県内で夜間診療に対応する動物病院です。営業状況は目安のため、来院前に必ずお電話でご確認ください。</p>
+    <div id="hosp-list"></div>
+  </section>
+
+  <p class="disclaimer">このアプリはおおよその目安を示すものであり、診断ではありません。最終的な判断は必ず獣医師にご相談ください。</p>
+</div>
+
+<script>
+/* ここを、自分のRenderの中継サーバーのURLに書き換えてください */
+const RELAY_URL = "https://dog-health-relay.onrender.com/analyze";
+
+const HOSPITALS = [
+  { name:"はち動物クリニック", hours:"月〜水・金〜土 10:00-13:00 / 16:00-20:00、木・日 10:00-13:00", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x35530d5b11c75d8f:0x93a8808cb0136d5",
+    schedule:[{days:[1,2,3,5,6],ranges:[["10:00","13:00"],["16:00","20:00"]]},{days:[4,0],ranges:[["10:00","13:00"]]}] },
+  { name:"おおしま動物病院", hours:"月〜木・土 9:00-11:30 / 16:00-19:30、金・日 9:00-11:30", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x3553738202a37259:0xe8684cc81c82452e",
+    schedule:[{days:[1,2,3,4,6],ranges:[["09:00","11:30"],["16:00","19:30"]]},{days:[5,0],ranges:[["09:00","11:30"]]}] },
+  { name:"海動物病院 徳島往診所", hours:"月〜金 11:00-20:00、土日 10:00-20:00", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x355312a7cdd00cbf:0x5237f4edde50d097",
+    schedule:[{days:[1,2,3,4,5],ranges:[["11:00","20:00"]]},{days:[6,0],ranges:[["10:00","20:00"]]}] },
+  { name:"ルドルフ動物病院", hours:"月・火・木〜土 9:00-12:30 / 16:00-19:30、日 9:00-12:30", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x3553730cc5c6c9cd:0x4089bc6eae77f9af",
+    schedule:[{days:[1,2,4,5,6],ranges:[["09:00","12:30"],["16:00","19:30"]]},{days:[0],ranges:[["09:00","12:30"]]}] },
+  { name:"なかがわ動物病院", hours:"月〜水・金〜土 9:00-13:00 / 17:00-19:30、木 9:00-13:00", note:"要確認（病院に直接お問い合わせください）", tel:"", maps:"https://www.google.com/maps/place//data=!4m2!3m1!1s0x35536d7b1c492ab7:0x3a32195d0b536efd",
+    schedule:[{days:[1,2,3,5,6],ranges:[["09:00","13:00"],["17:00","19:30"]]},{days:[4],ranges:[["09:00","13:00"]]}] }
+];
+
+function isOpenNow(hospital, now){
+  const day = now.getDay();
+  const minutes = now.getHours()*60 + now.getMinutes();
+  const block = hospital.schedule.find(b => b.days.includes(day));
+  if(!block) return {open:false};
+  for(const [start,end] of block.ranges){
+    const [sh,sm]=start.split(":").map(Number);
+    const [eh,em]=end.split(":").map(Number);
+    const s=sh*60+sm, e=eh*60+em;
+    if(minutes>=s && minutes<e) return {open:true, until:end};
+  }
+  return {open:false};
+}
+
+const tierMeta = {
+  emergency:{cls:"red", label:"緊急性が高い可能性"},
+  soon:{cls:"amber", label:"なるべく早めの受診を"},
+  observe:{cls:"green", label:"経過観察でも可"}
+};
+
+function switchScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+
+async function handleSubmit(){
+  const textEl = document.getElementById("symptom-text");
+  const text = textEl.value.trim();
+  const errEl = document.getElementById("error-text");
+  const btn = document.getElementById("submit-btn");
+  const hint = document.getElementById("loading-hint");
+  errEl.style.display = "none";
+  if(!text) return;
+
+  btn.disabled = true;
+  btn.textContent = "判定しています…";
+  hint.style.display = "block";
+
+  try{
+    const res = await fetch(RELAY_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    if(!res.ok){ throw new Error(data.error || "判定に失敗しました"); }
+    showResult(data);
+  }catch(e){
+    errEl.textContent = e.message || "判定に失敗しました。もう一度お試しください。";
+    errEl.style.display = "block";
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "受診の目安を調べる";
+    hint.style.display = "none";
+  }
+}
+
+function showResult(result){
+  switchScreen("screen-result");
+  const meta = tierMeta[result.urgency] || {cls:"green", label:"判定結果"};
+  const card = document.getElementById("result-card");
+  card.innerHTML =
+    '<span class="badge '+meta.cls+'">'+meta.label+'</span>'+
+    '<p class="result-title">'+result.title+'</p>'+
+    '<p class="result-desc">'+result.description+'</p>'+
+    '<p class="result-advice">'+result.advice+'</p>'+
+    '<p class="result-note">この結果は診断ではありません。判断に迷う場合は動物病院に電話で相談してください。</p>';
+}
+
+function showHospitals(){
+  switchScreen("screen-hosp");
+  const now = new Date();
+  const list = document.getElementById("hosp-list");
+  list.innerHTML = "";
+  HOSPITALS.forEach(h=>{
+    const status = isOpenNow(h, now);
+    const div = document.createElement("div");
+    div.className = "hosp-card";
+    let actions = '<a class="maps" href="'+h.maps+'" target="_blank" rel="noopener">地図を見る</a>';
+    if(h.tel){ actions += '<a class="call" href="tel:'+h.tel+'">電話をかける</a>'; }
+    div.innerHTML =
+      '<div class="hosp-top"><p class="hosp-name">'+h.name+'</p>'+
+      '<span class="hosp-status '+(status.open?"open":"closed")+'">'+(status.open?("診療中（"+status.until+"まで）"):"現在は診療時間外")+'</span></div>'+
+      '<p class="hosp-hours">'+h.hours+'</p>'+
+      '<p class="hosp-note">得意分野: '+h.note+'</p>'+
+      '<div class="hosp-actions">'+actions+'</div>';
+    list.appendChild(div);
+  });
+}
+
+function goHome(){
+  document.getElementById("symptom-text").value = "";
+  document.getElementById("error-text").style.display = "none";
+  switchScreen("screen-input");
+}
+</script>
+</body>
+</html>
