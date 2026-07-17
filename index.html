@@ -37,6 +37,26 @@
   .pet-selector{display:flex;gap:10px;margin-bottom:12px}
   .prefecture-row{margin:0 0 14px}.prefecture-row label{display:block;font-size:13px;color:var(--ink-sub);margin-bottom:6px}
   .prefecture-row select{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;color:var(--ink)}
+  .detail-toggle{
+    width:100%;display:flex;align-items:center;justify-content:space-between;
+    margin:0 0 12px;padding:11px 12px;background:#fff;border:1px solid var(--line);
+    border-radius:10px;color:var(--em-dark);font-size:14px;font-weight:700;cursor:pointer;
+  }
+  .detail-panel{display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:14px}
+  .detail-panel.open{display:block}
+  .detail-note{font-size:12px;color:var(--ink-sub);margin:0 0 11px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .form-group{margin-bottom:10px}
+  .form-group.full{grid-column:1/-1}
+  .form-group label{display:block;font-size:12px;color:var(--ink-sub);margin-bottom:5px}
+  .form-group input,.form-group select{
+    width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;
+    padding:10px;font-size:14px;color:var(--ink);font-family:inherit;
+  }
+  .form-group input:focus,.form-group select:focus{outline:none;border-color:var(--em)}
+  .status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:380px){.form-grid,.status-grid{grid-template-columns:1fr}}
+
   .condition-section{margin-top:16px}.condition-section h3{font-size:15px;margin:0 0 8px}
   .condition-card{border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:9px;background:#fff}
   .condition-card.danger{border-color:#FDA4AF;background:#FFF1F2}
@@ -176,7 +196,117 @@
       <button class="pet-btn active" type="button" data-pet="dog" onclick="selectPet('dog')">🐶 犬</button>
       <button class="pet-btn" type="button" data-pet="cat" onclick="selectPet('cat')">🐱 猫</button>
     </div>
-    <p class="section-label">いつから、どんな様子か、思いつくままで大丈夫です</p>
+    <p class="section-label">いつから、どんな様子か、思いつくままで大丈夫です。年齢・性別・避妊去勢・品種・体重・持病・服薬・ワクチン歴なども分かる範囲で入力すると、より具体的に整理できます。</p>
+
+    <button class="detail-toggle" id="detail-toggle" type="button" aria-expanded="false" onclick="toggleDetails()">
+      <span>詳しい情報を入力する（任意）</span><span id="detail-arrow">＋</span>
+    </button>
+
+    <div class="detail-panel" id="detail-panel">
+      <p class="detail-note">分からない項目は空欄のままで構いません。入力内容は症状判定の参考にします。</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="pet-age">年齢</label>
+          <input id="pet-age" type="text" maxlength="20" placeholder="例）7歳、6か月">
+        </div>
+        <div class="form-group">
+          <label for="pet-breed">品種</label>
+          <input id="pet-breed" type="text" maxlength="50" placeholder="例）柴犬、雑種">
+        </div>
+        <div class="form-group">
+          <label for="pet-sex">性別</label>
+          <select id="pet-sex">
+            <option value="">未選択</option>
+            <option value="オス">オス</option>
+            <option value="メス">メス</option>
+            <option value="不明">不明</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="pet-neuter">避妊・去勢</label>
+          <select id="pet-neuter">
+            <option value="">未選択</option>
+            <option value="済み">済み</option>
+            <option value="未実施">未実施</option>
+            <option value="不明">不明</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="pet-weight">体重</label>
+          <input id="pet-weight" type="text" maxlength="20" placeholder="例）8.5kg">
+        </div>
+        <div class="form-group">
+          <label for="symptom-duration">症状の期間</label>
+          <input id="symptom-duration" type="text" maxlength="50" placeholder="例）今朝から、3日前から">
+        </div>
+        <div class="form-group full">
+          <label for="symptom-count">症状の回数・頻度</label>
+          <input id="symptom-count" type="text" maxlength="80" placeholder="例）嘔吐3回、1時間に何度もトイレへ行く">
+        </div>
+        <div class="form-group full">
+          <label for="medical-history">持病・過去の病気</label>
+          <input id="medical-history" type="text" maxlength="150" placeholder="例）心臓病、腎臓病、アレルギー">
+        </div>
+        <div class="form-group full">
+          <label for="medications">現在の服薬</label>
+          <input id="medications" type="text" maxlength="150" placeholder="例）心臓の薬を毎日服用">
+        </div>
+        <div class="form-group full">
+          <label for="vaccination">ワクチン歴</label>
+          <input id="vaccination" type="text" maxlength="100" placeholder="例）混合ワクチン接種済み、時期不明">
+        </div>
+      </div>
+
+      <div class="status-grid">
+        <div class="form-group">
+          <label for="appetite-status">食欲</label>
+          <select id="appetite-status">
+            <option value="">未選択</option>
+            <option value="普段どおり">普段どおり</option>
+            <option value="少し低下">少し低下</option>
+            <option value="ほとんど食べない">ほとんど食べない</option>
+            <option value="まったく食べない">まったく食べない</option>
+            <option value="異常に増えた">異常に増えた</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="water-status">水分</label>
+          <select id="water-status">
+            <option value="">未選択</option>
+            <option value="普段どおり">普段どおり</option>
+            <option value="あまり飲まない">あまり飲まない</option>
+            <option value="飲めない">飲めない</option>
+            <option value="異常に多く飲む">異常に多く飲む</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="urination-status">排尿</label>
+          <select id="urination-status">
+            <option value="">未選択</option>
+            <option value="普段どおり">普段どおり</option>
+            <option value="回数が多い">回数が多い</option>
+            <option value="量が少ない">量が少ない</option>
+            <option value="ほとんど出ない">ほとんど出ない</option>
+            <option value="血尿がある">血尿がある</option>
+            <option value="失禁がある">失禁がある</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="defecation-status">排便</label>
+          <select id="defecation-status">
+            <option value="">未選択</option>
+            <option value="普段どおり">普段どおり</option>
+            <option value="下痢">下痢</option>
+            <option value="血便">血便</option>
+            <option value="便秘">便秘</option>
+            <option value="黒い便">黒い便</option>
+            <option value="排便できない">排便できない</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <textarea id="symptom-text" maxlength="1000" placeholder="例）今朝から下痢が3回あって、いつもより元気がありません。ご飯は少し食べました。"></textarea>
     <p class="counter"><span id="char-count">0</span>/1000文字</p>
     <p class="error-text" id="error-text" style="display:none"></p>
@@ -229,6 +359,38 @@ function selectPet(pet){
   });
 }
 
+function toggleDetails(){
+  const panel=document.getElementById("detail-panel");
+  const button=document.getElementById("detail-toggle");
+  const arrow=document.getElementById("detail-arrow");
+  const isOpen=panel.classList.toggle("open");
+  button.setAttribute("aria-expanded",String(isOpen));
+  arrow.textContent=isOpen?"−":"＋";
+}
+
+function fieldValue(id){
+  return document.getElementById(id)?.value?.trim() || "";
+}
+
+function collectPetDetails(){
+  return {
+    age:fieldValue("pet-age"),
+    breed:fieldValue("pet-breed"),
+    sex:fieldValue("pet-sex"),
+    neuterStatus:fieldValue("pet-neuter"),
+    weight:fieldValue("pet-weight"),
+    medicalHistory:fieldValue("medical-history"),
+    medications:fieldValue("medications"),
+    vaccinationHistory:fieldValue("vaccination"),
+    symptomDuration:fieldValue("symptom-duration"),
+    symptomFrequency:fieldValue("symptom-count"),
+    appetite:fieldValue("appetite-status"),
+    waterIntake:fieldValue("water-status"),
+    urination:fieldValue("urination-status"),
+    defecation:fieldValue("defecation-status")
+  };
+}
+
 function switchScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
@@ -266,7 +428,7 @@ async function handleSubmit(){
     const res = await fetch(`${RELAY_BASE}/analyze`, {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({text, pet:selectedPet})
+      body:JSON.stringify({text,pet:selectedPet,details:collectPetDetails()})
     });
     const data = await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(data.error || "判定に失敗しました");
