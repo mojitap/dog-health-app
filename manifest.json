@@ -1,9 +1,24 @@
 {
-  "name": "わんちゃん健康チェック",
-  "short_name": "わんちゃんチェック",
-  "start_url": "./index.html",
+  "name": "ペット健康チェック",
+  "short_name": "ペット健康",
+  "description": "犬・猫の症状から受診の目安を確認するサービス",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#F7F5EF",
-  "theme_color": "#0F6E56",
-  "icons": []
+  "background_color": "#FFF7ED",
+  "theme_color": "#10B981",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
