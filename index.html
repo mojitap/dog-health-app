@@ -35,6 +35,18 @@
   .top-link{font-size:13px;color:var(--em-dark);display:block;margin:0 0 14px;text-decoration:underline;cursor:pointer;background:none;border:none;padding:0}
   .section-label{font-size:13px;color:var(--ink-sub);margin:0 0 12px}
   .pet-selector{display:flex;gap:10px;margin-bottom:12px}
+  .prefecture-row{margin:0 0 14px}.prefecture-row label{display:block;font-size:13px;color:var(--ink-sub);margin-bottom:6px}
+  .prefecture-row select{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;color:var(--ink)}
+  .condition-section{margin-top:16px}.condition-section h3{font-size:15px;margin:0 0 8px}
+  .condition-card{border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:9px;background:#fff}
+  .condition-card.danger{border-color:#FDA4AF;background:#FFF1F2}
+  .condition-head{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:5px}
+  .condition-name{font-weight:700;font-size:14px}.condition-category{font-size:11px;padding:3px 8px;border-radius:999px;background:#F5F5F4;color:var(--ink-sub)}
+  .condition-category.danger{background:var(--red-light);color:var(--red)}
+  .condition-reason{font-size:13px;color:var(--ink-sub);margin:0}
+  .mini-list{font-size:12px;color:var(--ink-sub);margin:7px 0 0;padding-left:20px}
+  .info-section{margin-top:14px;background:#FAFAF9;border-radius:10px;padding:12px}.info-section h3{font-size:14px;margin:0 0 6px}.info-section ul{font-size:13px;margin:0;padding-left:20px}
+  .medical-disclaimer{font-size:12px;color:#7C2D12;background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:11px;margin-top:14px}
   .pet-btn{
     flex:1;border:1px solid var(--line);background:var(--card);border-radius:10px;
     padding:10px;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink-sub);
@@ -106,7 +118,59 @@
 
 <div class="wrap">
   <section id="screen-input" class="screen active">
-    <button class="top-link" type="button" onclick="showHospitals()">現在営業時間内の動物病院を見る &rsaquo;</button>
+    <div class="prefecture-row">
+      <label for="prefecture-select">動物病院を探す都道府県</label>
+      <select id="prefecture-select">
+        <option value="北海道">北海道</option>
+        <option value="青森県">青森県</option>
+        <option value="岩手県">岩手県</option>
+        <option value="宮城県">宮城県</option>
+        <option value="秋田県">秋田県</option>
+        <option value="山形県">山形県</option>
+        <option value="福島県">福島県</option>
+        <option value="茨城県">茨城県</option>
+        <option value="栃木県">栃木県</option>
+        <option value="群馬県">群馬県</option>
+        <option value="埼玉県">埼玉県</option>
+        <option value="千葉県">千葉県</option>
+        <option value="東京都">東京都</option>
+        <option value="神奈川県">神奈川県</option>
+        <option value="新潟県">新潟県</option>
+        <option value="富山県">富山県</option>
+        <option value="石川県">石川県</option>
+        <option value="福井県">福井県</option>
+        <option value="山梨県">山梨県</option>
+        <option value="長野県">長野県</option>
+        <option value="岐阜県">岐阜県</option>
+        <option value="静岡県">静岡県</option>
+        <option value="愛知県">愛知県</option>
+        <option value="三重県">三重県</option>
+        <option value="滋賀県">滋賀県</option>
+        <option value="京都府">京都府</option>
+        <option value="大阪府">大阪府</option>
+        <option value="兵庫県">兵庫県</option>
+        <option value="奈良県">奈良県</option>
+        <option value="和歌山県">和歌山県</option>
+        <option value="鳥取県">鳥取県</option>
+        <option value="島根県">島根県</option>
+        <option value="岡山県">岡山県</option>
+        <option value="広島県">広島県</option>
+        <option value="山口県">山口県</option>
+        <option value="徳島県" selected>徳島県</option>
+        <option value="香川県">香川県</option>
+        <option value="愛媛県">愛媛県</option>
+        <option value="高知県">高知県</option>
+        <option value="福岡県">福岡県</option>
+        <option value="佐賀県">佐賀県</option>
+        <option value="長崎県">長崎県</option>
+        <option value="熊本県">熊本県</option>
+        <option value="大分県">大分県</option>
+        <option value="宮崎県">宮崎県</option>
+        <option value="鹿児島県">鹿児島県</option>
+        <option value="沖縄県">沖縄県</option>
+      </select>
+    </div>
+    <button class="top-link" type="button" onclick="showHospitals()">選択した都道府県で現在営業時間内の動物病院を見る &rsaquo;</button>
     <p class="section-label">どちらの症状を調べますか？</p>
     <div class="pet-selector" role="group" aria-label="ペットの種類">
       <button class="pet-btn active" type="button" data-pet="dog" onclick="selectPet('dog')">🐶 犬</button>
@@ -133,7 +197,7 @@
 
   <section id="screen-hosp" class="screen">
     <button class="topbar" type="button" onclick="goHome()">&larr; トップへ</button>
-    <p class="section-label">徳島県内で、Google登録情報上、現在営業時間内の動物病院を表示します。夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。</p>
+    <p class="section-label" id="hospital-intro">選択した都道府県で、Google登録情報上、現在営業時間内の動物病院を表示します。夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。</p>
     <div id="hosp-list"><p class="section-label">徳島県内で現在営業時間内の動物病院を確認しています…</p></div>
   </section>
 
@@ -217,45 +281,132 @@ async function handleSubmit(){
   }
 }
 
-function showResult(result){
-  const urgency = ["emergency","soon","observe"].includes(result.urgency) ? result.urgency : "soon";
-  const meta = tierMeta[urgency];
-  document.getElementById("emergency-box").classList.toggle("show", urgency === "emergency");
+function appendListSection(parent,title,items){
+  if(!Array.isArray(items) || !items.length) return;
+  const section=document.createElement("section");
+  section.className="info-section";
+  const h=document.createElement("h3");
+  h.textContent=title;
+  const ul=document.createElement("ul");
+  items.forEach(item=>{
+    const li=document.createElement("li");
+    li.textContent=String(item);
+    ul.appendChild(li);
+  });
+  section.append(h,ul);
+  parent.appendChild(section);
+}
 
-  const card = document.getElementById("result-card");
+function showResult(result){
+  const urgency=["emergency","soon","observe"].includes(result.urgency)?result.urgency:"soon";
+  const meta=tierMeta[urgency];
+  document.getElementById("emergency-box").classList.toggle("show",urgency==="emergency");
+
+  const card=document.getElementById("result-card");
   card.replaceChildren();
 
-  const badge = document.createElement("span");
-  badge.className = `badge ${meta.cls}`;
-  badge.textContent = meta.label;
+  const badge=document.createElement("span");
+  badge.className=`badge ${meta.cls}`;
+  badge.textContent=meta.label;
 
-  const title = document.createElement("p");
-  title.className = "result-title";
-  title.textContent = safeText(result.title, "症状の確認結果");
+  const title=document.createElement("p");
+  title.className="result-title";
+  title.textContent=safeText(result.summary,"症状の確認結果");
 
-  const desc = document.createElement("p");
-  desc.className = "result-desc";
-  desc.textContent = safeText(result.description, "入力内容から受診の目安を判定しました。");
+  card.append(badge,title);
 
-  const advice = document.createElement("p");
-  advice.className = "result-advice";
-  advice.textContent = safeText(result.advice, "判断に迷う場合は動物病院へ電話で相談してください。");
+  const conditions=Array.isArray(result.possibleConditions)?result.possibleConditions:[];
+  if(conditions.length){
+    const section=document.createElement("section");
+    section.className="condition-section";
+    const heading=document.createElement("h3");
+    heading.textContent="考えられる病気・状態";
+    section.appendChild(heading);
 
-  const note = document.createElement("p");
-  note.className = "result-note";
-  note.textContent = "この結果は診断ではありません。症状が悪化した場合や判断に迷う場合は、動物病院へ電話で相談してください。";
+    conditions.forEach(condition=>{
+      const item=document.createElement("article");
+      const isDanger=condition.category==="見逃したくない";
+      item.className=`condition-card${isDanger?" danger":""}`;
 
-  card.append(badge,title,desc,advice,note);
+      const head=document.createElement("div");
+      head.className="condition-head";
+
+      const name=document.createElement("span");
+      name.className="condition-name";
+      name.textContent=safeText(condition.name,"候補");
+
+      const category=document.createElement("span");
+      category.className=`condition-category${isDanger?" danger":""}`;
+      category.textContent=safeText(condition.category,"候補の一つ");
+
+      head.append(name,category);
+
+      const reason=document.createElement("p");
+      reason.className="condition-reason";
+      reason.textContent=safeText(condition.reason,"入力情報だけでは詳しく判断できません。");
+
+      item.append(head,reason);
+
+      if(Array.isArray(condition.matchingSigns)&&condition.matchingSigns.length){
+        const label=document.createElement("p");
+        label.className="condition-reason";
+        label.textContent="一致する点";
+        const ul=document.createElement("ul");
+        ul.className="mini-list";
+        condition.matchingSigns.forEach(v=>{
+          const li=document.createElement("li");li.textContent=String(v);ul.appendChild(li);
+        });
+        item.append(label,ul);
+      }
+
+      if(Array.isArray(condition.missingInformation)&&condition.missingInformation.length){
+        const label=document.createElement("p");
+        label.className="condition-reason";
+        label.textContent="判断に不足している情報";
+        const ul=document.createElement("ul");
+        ul.className="mini-list";
+        condition.missingInformation.forEach(v=>{
+          const li=document.createElement("li");li.textContent=String(v);ul.appendChild(li);
+        });
+        item.append(label,ul);
+      }
+
+      section.appendChild(item);
+    });
+    card.appendChild(section);
+  }
+
+  appendListSection(card,"今回とくに気になる点",result.keyConcerns);
+  appendListSection(card,"すぐ受診する目安",result.warningSigns);
+  appendListSection(card,"獣医師が必要に応じて検討する診察・検査",result.recommendedTests);
+
+  const advice=document.createElement("p");
+  advice.className="result-advice";
+  advice.textContent=safeText(result.advice,"判断に迷う場合は動物病院へ電話で相談してください。");
+  card.appendChild(advice);
+
+  const disclaimer=document.createElement("p");
+  disclaimer.className="medical-disclaimer";
+  disclaimer.textContent=safeText(
+    result.disclaimer,
+    "表示された病名や状態は、入力内容から考えられる可能性の例であり、診断ではありません。正確な判断には獣医師による診察・検査が必要です。"
+  );
+  card.appendChild(disclaimer);
+
   switchScreen("screen-result");
 }
 
 async function showHospitals(){
+  const prefecture=document.getElementById("prefecture-select").value;
   switchScreen("screen-hosp");
-  const list = document.getElementById("hosp-list");
-  list.innerHTML = '<p class="section-label">徳島県内で現在営業時間内の動物病院を確認しています…</p>';
+  document.getElementById("hospital-intro").textContent=
+    `${prefecture}で、Google登録情報上、現在営業時間内の動物病院を表示します。夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。`;
+
+  const list=document.getElementById("hosp-list");
+  list.innerHTML=`<p class="section-label">${prefecture}で現在営業時間内の動物病院を確認しています…</p>`;
 
   try{
-    const res = await fetch(`${RELAY_BASE}/hospitals`);
+    const res=await fetch(`${RELAY_BASE}/hospitals?prefecture=${encodeURIComponent(prefecture)}`);
     const data = await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(data.error || "病院情報を取得できませんでした");
     renderHospitals(Array.isArray(data.hospitals) ? data.hospitals : []);
@@ -275,11 +426,11 @@ function renderHospitals(hospitals){
   if(!hospitals.length){
     const p = document.createElement("p");
     p.className = "section-label";
-    p.textContent = "現在、Google登録情報上で営業時間内の動物病院を確認できませんでした。営業時間外でも電話対応している場合があるため、Googleマップや各病院の公式情報もご確認ください。";
+    p.textContent = `${document.getElementById("prefecture-select").value}では、現在Google登録情報上で営業時間内の動物病院を確認できませんでした。営業時間外でも電話対応している場合があるため、Googleマップや各病院の公式情報もご確認ください。`;
     list.appendChild(p);
 
     const maps = document.createElement("a");
-    maps.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("徳島県 夜間 動物病院");
+    maps.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(`${document.getElementById("prefecture-select").value} 夜間 動物病院`);
     maps.target = "_blank";
     maps.rel = "noopener";
     maps.className = "ghost-btn";
@@ -290,7 +441,7 @@ function renderHospitals(hospitals){
 
   const summary = document.createElement("p");
   summary.className = "section-label";
-  summary.textContent = `Google登録情報上、現在営業時間内の動物病院が${hospitals.length}件見つかりました。`;
+  summary.textContent = `${document.getElementById("prefecture-select").value}で、Google登録情報上、現在営業時間内の動物病院が${hospitals.length}件見つかりました。`;
   list.appendChild(summary);
 
   hospitals.forEach(h=>{
@@ -367,7 +518,16 @@ function goHome(){
 }
 
 document.getElementById("symptom-text").addEventListener("input", e=>{
-  document.getElementById("char-count").textContent = e.target.value.length;
+  document.getElementById("char-count").textContent=e.target.value.length;
+});
+
+const prefectureSelect=document.getElementById("prefecture-select");
+const savedPrefecture=localStorage.getItem("petHealthPrefecture");
+if(savedPrefecture && [...prefectureSelect.options].some(o=>o.value===savedPrefecture)){
+  prefectureSelect.value=savedPrefecture;
+}
+prefectureSelect.addEventListener("change",()=>{
+  localStorage.setItem("petHealthPrefecture",prefectureSelect.value);
 });
 
 window.addEventListener("beforeinstallprompt", event=>{
