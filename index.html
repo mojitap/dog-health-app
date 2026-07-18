@@ -33,6 +33,19 @@
   header.app p{font-size:13px;margin:0;opacity:.85}
   .screen{display:none}.screen.active{display:block}
   .top-link{font-size:13px;color:var(--em-dark);display:block;margin:0 0 14px;text-decoration:underline;cursor:pointer;background:none;border:none;padding:0}
+  .hospital-search-links{display:grid;gap:9px;margin:0 0 16px}
+  .hospital-search-btn{
+    width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    border:1px solid var(--line);background:var(--card);border-radius:11px;
+    padding:11px 12px;color:var(--ink);font-size:13px;font-weight:600;
+    text-align:left;cursor:pointer;
+  }
+  .hospital-search-btn span:last-child{color:var(--em-dark);font-size:17px;line-height:1}
+  .hospital-search-btn.insurance{background:#FFFDF7}
+  .insurance-search-note{
+    font-size:11px;color:var(--ink-muted);line-height:1.6;margin:-8px 2px 15px;
+  }
+
   .section-label{font-size:13px;color:var(--ink-sub);margin:0 0 12px}
   .pet-selector{display:flex;gap:10px;margin-bottom:12px}
   .prefecture-row{margin:0 0 14px}.prefecture-row label{display:block;font-size:13px;color:var(--ink-sub);margin-bottom:6px}
@@ -190,7 +203,15 @@
         <option value="沖縄県">沖縄県</option>
       </select>
     </div>
-    <button class="top-link" type="button" onclick="showHospitals()">選択した都道府県で現在営業時間内の動物病院を見る &rsaquo;</button>
+    <div class="hospital-search-links">
+      <button class="hospital-search-btn" type="button" onclick="showHospitals()">
+        <span>現在営業時間内の動物病院を探す</span><span>›</span>
+      </button>
+      <button class="hospital-search-btn insurance" type="button" onclick="searchInsuranceHospitals()">
+        <span>ペット保険対応の動物病院を探す</span><span>›</span>
+      </button>
+    </div>
+    <p class="insurance-search-note">選択した都道府県を含めてGoogle検索を開きます。対応する保険会社や窓口精算の可否は、各病院へ直接ご確認ください。</p>
     <p class="section-label">どちらの症状を調べますか？</p>
     <div class="pet-selector" role="group" aria-label="ペットの種類">
       <button class="pet-btn active" type="button" data-pet="dog" onclick="selectPet('dog')">🐶 犬</button>
@@ -483,6 +504,14 @@ function showResult(result){
   card.appendChild(disclaimer);
 
   switchScreen("screen-result");
+}
+
+function searchInsuranceHospitals(){
+  const prefecture=document.getElementById("prefecture-select").value;
+  localStorage.setItem("petHealthPrefecture",prefecture);
+  const query=`${prefecture} ペット保険対応 動物病院`;
+  const url="https://www.google.com/search?q="+encodeURIComponent(query);
+  window.open(url,"_blank","noopener");
 }
 
 async function showHospitals(){
