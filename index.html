@@ -138,6 +138,20 @@
   .install-card h2{font-size:14px;margin:0 0 4px}.install-card p{font-size:12px;color:var(--ink-sub);margin:0}
   .install-card button{margin-top:9px;width:100%;border:1px solid var(--em);background:#fff;color:var(--em-dark);border-radius:9px;padding:9px;font-weight:600}
   .disclaimer{font-size:11px;color:var(--ink-muted);text-align:center;margin:24px 0 0;padding:0 8px}
+
+  .load-more-wrap{display:flex;justify-content:center;margin:14px 0 4px}
+  .load-more-btn{
+    border:1px solid var(--em);background:#fff;color:var(--em-dark);
+    border-radius:999px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;
+  }
+  .insurance-box{
+    margin-top:10px;padding:10px 11px;border:1px solid var(--line);
+    background:#fffdf7;border-radius:10px;
+  }
+  .insurance-title{font-size:12px;font-weight:700;margin:0 0 5px}
+  .insurance-list{font-size:12px;line-height:1.7;margin:0;color:var(--ink)}
+  .insurance-updated{font-size:10px;color:var(--ink-muted);margin:5px 0 0}
+
 </style>
 </head>
 <body>
@@ -211,7 +225,7 @@
         <span>ペット保険対応の動物病院を探す</span><span>›</span>
       </button>
     </div>
-    <p class="insurance-search-note">選択した都道府県を含めてGoogle検索を開きます。対応する保険会社や窓口精算の可否は、各病院へ直接ご確認ください。</p>
+    <p class="insurance-search-note">保険情報を登録済みの病院は、対応する保険会社と更新日をツール内に表示します。夜間・救急時の窓口精算可否は、病院へ直接ご確認ください。</p>
     <p class="section-label">どちらの症状を調べますか？</p>
     <div class="pet-selector" role="group" aria-label="ペットの種類">
       <button class="pet-btn active" type="button" data-pet="dog" onclick="selectPet('dog')">🐶 犬</button>
@@ -507,15 +521,17 @@ function showResult(result){
 }
 
 function searchInsuranceHospitals(){
-  const prefecture=document.getElementById("prefecture-select").value;
-  localStorage.setItem("petHealthPrefecture",prefecture);
-  const query=`${prefecture} ペット保険対応 動物病院`;
-  const url="https://www.google.com/search?q="+encodeURIComponent(query);
-  window.open(url,"_blank","noopener");
+  showHospitals(true);
 }
 
-async function showHospitals(){
+let hospitalResults=[];
+let hospitalDisplayCount=5;
+let insuranceFocus=false;
+
+async function showHospitals(showInsuranceOnly=false){
   const prefecture=document.getElementById("prefecture-select").value;
+  hospitalDisplayCount=5;
+  insuranceFocus=showInsuranceOnly;
   switchScreen("screen-hosp");
   document.getElementById("hospital-intro").textContent=
     `${prefecture}で、Google登録情報上、現在営業時間内の動物病院を表示します。夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。`;
@@ -527,7 +543,8 @@ async function showHospitals(){
     const res=await fetch(`${RELAY_BASE}/hospitals?prefecture=${encodeURIComponent(prefecture)}`);
     const data = await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(data.error || "病院情報を取得できませんでした");
-    renderHospitals(Array.isArray(data.hospitals) ? data.hospitals : []);
+    hospitalResults=Array.isArray(data.hospitals) ? data.hospitals : [];
+    renderHospitals();
   }catch(e){
     list.textContent = "";
     const p = document.createElement("p");
@@ -537,9 +554,13 @@ async function showHospitals(){
   }
 }
 
-function renderHospitals(hospitals){
+function renderHospitals(){
   const list = document.getElementById("hosp-list");
   list.replaceChildren();
+
+  const hospitals=insuranceFocus
+    ? hospitalResults.filter(h=>h.insurance && Array.isArray(h.insurance.insurers) && h.insurance.insurers.length)
+    : hospitalResults;
 
   if(!hospitals.length){
     const p = document.createElement("p");
@@ -559,10 +580,12 @@ function renderHospitals(hospitals){
 
   const summary = document.createElement("p");
   summary.className = "section-label";
-  summary.textContent = `${document.getElementById("prefecture-select").value}で、Google登録情報上、現在営業時間内の動物病院が${hospitals.length}件見つかりました。`;
+  summary.textContent = insuranceFocus
+    ? `${document.getElementById("prefecture-select").value}で、現在営業時間内かつ保険対応情報を確認できた動物病院が${hospitals.length}件見つかりました。`
+    : `${document.getElementById("prefecture-select").value}で、Google登録情報上、現在営業時間内の動物病院が${hospitals.length}件見つかりました。`;
   list.appendChild(summary);
 
-  hospitals.forEach(h=>{
+  hospitals.slice(0,hospitalDisplayCount).forEach(h=>{
     const card = document.createElement("div");
     card.className = "hosp-card";
 
@@ -603,6 +626,34 @@ function renderHospitals(hospitals){
       card.appendChild(phone);
     }
 
+    const insuranceBox=document.createElement("div");
+    insuranceBox.className="insurance-box";
+
+    const insuranceTitle=document.createElement("p");
+    insuranceTitle.className="insurance-title";
+    insuranceTitle.textContent="ペット保険";
+    insuranceBox.appendChild(insuranceTitle);
+
+    const insuranceList=document.createElement("p");
+    insuranceList.className="insurance-list";
+
+    if(h.insurance && Array.isArray(h.insurance.insurers) && h.insurance.insurers.length){
+      insuranceList.textContent=h.insurance.insurers.join("・")+" 対応情報あり";
+      insuranceBox.appendChild(insuranceList);
+
+      if(h.insurance.updatedAt){
+        const updated=document.createElement("p");
+        updated.className="insurance-updated";
+        updated.textContent=`更新日：${h.insurance.updatedAt}`;
+        insuranceBox.appendChild(updated);
+      }
+    }else{
+      insuranceList.textContent="対応状況は未確認です。病院へ直接ご確認ください。";
+      insuranceBox.appendChild(insuranceList);
+    }
+
+    card.appendChild(insuranceBox);
+
     const note = document.createElement("p");
     note.className = "hosp-note";
     note.textContent = "夜間診療・救急対応が可能か、来院前に必ず電話で確認してください。";
@@ -628,6 +679,23 @@ function renderHospitals(hospitals){
     card.appendChild(actions);
     list.appendChild(card);
   });
+
+  if(hospitalDisplayCount < hospitals.length){
+    const wrap=document.createElement("div");
+    wrap.className="load-more-wrap";
+
+    const button=document.createElement("button");
+    button.type="button";
+    button.className="load-more-btn";
+    button.textContent=`さらに5件表示（残り${hospitals.length-hospitalDisplayCount}件）`;
+    button.addEventListener("click",()=>{
+      hospitalDisplayCount+=5;
+      renderHospitals();
+    });
+
+    wrap.appendChild(button);
+    list.appendChild(wrap);
+  }
 }
 
 function goHome(){
